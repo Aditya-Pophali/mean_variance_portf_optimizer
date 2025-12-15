@@ -22,8 +22,13 @@ def fetch_stock_data(tickers: List[str], start_date: str, end_date: str) -> pd.D
     
     # Handle single vs multiple tickers
     if len(tickers) == 1:
-        prices = data[['Adj Close']].copy()
-        prices.columns = tickers
+        # For single ticker, data structure may vary
+        if 'Adj Close' in data.columns:
+            prices = data[['Adj Close']].copy()
+            prices.columns = tickers
+        else:
+            # Handle case where data is already a Series or simple DataFrame
+            prices = pd.DataFrame(data['Adj Close'] if isinstance(data, pd.DataFrame) else data, columns=tickers)
     else:
         prices = data['Adj Close'].copy()
     

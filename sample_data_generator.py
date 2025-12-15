@@ -44,10 +44,21 @@ def generate_sample_stock_data(tickers=['AAPL', 'MSFT'],
     # Generate independent random returns
     independent_returns = np.random.normal(0, 1, (n_days, n_assets))
     
-    # Create correlation matrix (0.7 correlation for tech stocks)
-    correlation = 0.7
-    corr_matrix = np.full((n_assets, n_assets), correlation)
-    np.fill_diagonal(corr_matrix, 1.0)
+    # Create a valid correlation matrix
+    if n_assets == 2:
+        # For 2 assets, use simple correlation
+        correlation = 0.7
+        corr_matrix = np.array([[1.0, correlation], [correlation, 1.0]])
+    else:
+        # For more assets, create a valid positive semi-definite correlation matrix
+        # Use a factor model approach
+        corr_matrix = np.eye(n_assets)
+        for i in range(n_assets):
+            for j in range(i+1, n_assets):
+                # Decreasing correlation with distance
+                corr = 0.7 / (1 + 0.1 * abs(i - j))
+                corr_matrix[i, j] = corr
+                corr_matrix[j, i] = corr
     
     # Apply Cholesky decomposition to get correlated returns
     L = np.linalg.cholesky(corr_matrix)

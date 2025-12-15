@@ -66,6 +66,9 @@ def find_max_sharpe_portfolio(mean_returns: pd.Series, cov_matrix: pd.DataFrame,
     # Objective function: negative Sharpe ratio (to minimize)
     def neg_sharpe(weights):
         portfolio_return, portfolio_std = portfolio_performance(weights, mean_returns, cov_matrix)
+        # Avoid division by zero
+        if portfolio_std <= 0:
+            return 1e10  # Return large penalty for invalid portfolios
         return -calculate_sharpe_ratio(portfolio_return, portfolio_std, risk_free_rate)
     
     # Constraints: weights sum to 1

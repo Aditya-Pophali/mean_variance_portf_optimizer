@@ -33,7 +33,7 @@ def main():
     parser.add_argument(
         '--start-date',
         type=str,
-        default=(datetime.now() - timedelta(days=3*365)).strftime('%Y-%m-%d'),
+        default=(datetime.now() - timedelta(days=1095)).strftime('%Y-%m-%d'),  # 3 years (accounting for leap years)
         help='Start date for historical data (YYYY-MM-DD, default: 3 years ago)'
     )
     parser.add_argument(
